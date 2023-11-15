@@ -13,7 +13,7 @@ def generateAllure() {
 /** jenkins declarative pipeline */
 pipeline {
     agent {
-        label agentLabel
+        label 'linux'
     }
 
     tools {
