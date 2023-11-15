@@ -6,6 +6,7 @@ base_git_url = "https://github.com/RamKotto/ApiTests.git"
 
 node {
     withEnv(["branch=${branch_cutted}", "base_url=${base_git_url}"]) {
+        sh 'cd ApiTests'
         stage("Checkout Branch") {
             if (!"$branch_cutted".contains("develop")) {
                 try {
@@ -19,8 +20,7 @@ node {
             }
         }
         try {
-//            parallel getTestStages(["colortests", "usertests"])
-            sh 'gradle cleanTest colortests'
+            parallel getTestStages(["colortests", "usertests"])
         } finally {
             stage("Allure") {
                 generateAllure()
