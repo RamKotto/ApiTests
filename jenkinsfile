@@ -23,7 +23,7 @@ pipeline {
     }
 
     stages {
-        stage("Build") {
+        stage("Preparing") {
             steps {
                 script {
                     currentBuild.displayName = "v${env.VERSION}"
