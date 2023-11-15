@@ -43,7 +43,7 @@ def getTestStages(testTasks) {
 
 def runTestTask(String task) {
     try {
-        labelledShell(label: "Run ${task}", script: "ls")
+        labelledShell(label: "Run ${task}", script: "cd ApiTests")
     } finally {
         echo "some failed tests"
     }
