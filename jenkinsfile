@@ -1,0 +1,41 @@
+#!groovy
+
+def generateAllure() {
+    allure([
+            includeProperties: true,
+            jdk              : '',
+            properties       : [],
+            reportBuildPolicy: 'ALWAYS',
+            results          : [[path: 'build/allure-results']]
+    ])
+}
+
+/** jenkins declarative pipeline */
+pipeline {
+    agent {
+        label agentLabel
+    }
+
+    tools {
+        gradle 'gradle-jenkins'
+    }
+
+    stages {
+        stage('Git') {
+            steps {
+                sh "git clone https://github.com/RamKotto/ApiTests.git"
+            }
+        }
+
+        stage('Tests') {
+            sh "gradle cleanTest regresstests"
+        }
+
+        stage('Allure') {
+            steps {
+                generateAllure()
+            }
+        }
+    }
+}
+
