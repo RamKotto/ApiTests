@@ -12,7 +12,7 @@ def generateAllure() {
 
 /** jenkins declarative pipeline */
 pipeline {
-    agent any()
+    agent any
 
     tools {
         gradle 'gradle-jenkins'
