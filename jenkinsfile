@@ -28,7 +28,9 @@ pipeline {
         }
 
         stage('Tests') {
-            sh "gradle cleanTest regresstests"
+            steps {
+                sh "gradle cleanTest regresstests"
+            }
         }
 
         stage('Allure') {
