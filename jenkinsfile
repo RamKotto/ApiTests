@@ -21,9 +21,8 @@ pipeline {
     stages {
         stage('Git') {
             steps {
-//                sh "rm -r ApiTests"
                 git url: 'https://github.com/RamKotto/ApiTests.git',
-                    branch: "${BRANCH_NAME}"
+                        branch: "${BRANCH_NAME}"
             }
         }
 
