@@ -3,31 +3,62 @@ def branch_cutted = task_branch.contains("origin") ? task_branch.split('/')[1] :
 currentBuild.displayName = "$branch_cutted"
 base_git_url = "https://github.com/RamKotto/ApiTests.git"
 
-tools {
-    gradle 'gradle-jenkins'
-}
 
+//node {
+//    withEnv(["branch=${branch_cutted}", "base_url=${base_git_url}"]) {
+//        stage("Checkout Branch") {
+//            if (!"$branch_cutted".contains("develop")) {
+//                try {
+//                    getProject("$base_git_url", "$branch_cutted")
+//                } catch (err) {
+//                    echo "Failed get branch $branch_cutted"
+//                    throw ("${err}")
+//                }
+//            } else {
+//                echo "Current branch is develop"
+//            }
+//        }
+//
+//        try {
+//            parallel getTestStages(["colortests", "usertests"])
+//        } finally {
+//            stage("Allure") {
+//                generateAllure()
+//            }
+//        }
+//    }
+//}
 
-node {
-    withEnv(["branch=${branch_cutted}", "base_url=${base_git_url}"]) {
+pipeline {
+    agent any
+
+    tools {
+        gradle 'gradle-jenkins'
+    }
+    stages {
         stage("Checkout Branch") {
-            if (!"$branch_cutted".contains("develop")) {
-                try {
-                    getProject("$base_git_url", "$branch_cutted")
-                } catch (err) {
-                    echo "Failed get branch $branch_cutted"
-                    throw ("${err}")
+            steps {
+                withEnv(["branch=${branch_cutted}", "base_url=${base_git_url}"]) {
+                    if (!"$branch_cutted".contains("develop")) {
+                        try {
+                            getProject("$base_git_url", "$branch_cutted")
+                        } catch (err) {
+                            echo "Failed get branch $branch_cutted"
+                            throw ("${err}")
+                        }
+                    } else {
+                        echo "Current branch is develop"
+                    }
                 }
-            } else {
-                echo "Current branch is develop"
             }
         }
-
-        try {
-            parallel getTestStages(["colortests", "usertests"])
-        } finally {
-            stage("Allure") {
-                generateAllure()
+        stage("Tests") {
+            try {
+                parallel getTestStages(["colortests", "usertests"])
+            } finally {
+                stage("Allure") {
+                    generateAllure()
+                }
             }
         }
     }
