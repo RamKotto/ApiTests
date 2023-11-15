@@ -28,7 +28,7 @@ pipeline {
 
         stage('Tests') {
             steps {
-                sh "/opt/gradle/gradle-8.4/bin/gradle cleanTest regresstests"
+                sh "/opt/gradle/gradle-8.4/bin/gradle cleanTest ${TASK}"
             }
         }
 
