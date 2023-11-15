@@ -21,6 +21,7 @@ pipeline {
     stages {
         stage('Git') {
             steps {
+                sh "rm -r ApiTests"
                 sh "git clone https://github.com/RamKotto/ApiTests.git"
             }
         }
