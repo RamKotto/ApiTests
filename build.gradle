@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "8.4"
+    id "io.qameta.allure" version "2.11.2"
+}
+
+group = 'ru.saraev'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+
+    implementation group: 'io.rest-assured', name: 'rest-assured', version: '5.3.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.15.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.15.2'
+
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-junit5
+    implementation group: 'io.qameta.allure', name: 'allure-junit5', version: '2.23.0'
+    // https://mvnrepository.com/artifact/io.qameta.allure/allure-rest-assured
+    implementation group: 'io.qameta.allure', name: 'allure-rest-assured', version: '2.24.0'
+
+
+    // https://mvnrepository.com/artifact/org.aspectj/aspectjweaver
+    runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.20.1'
+
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    outputs.upToDateWhen { false }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+
+//        jvmArgs '-noverify'
+
+}
+
+tasks.register('usertests', Test).configure {
+    filter {
+        includeTestsMatching("user_test*")
+    }
+}
+
+tasks.register('colortests', Test).configure {
+    filter {
+        includeTestsMatching("color_test*")
+    }
+}
+
+tasks.register('regresstests', Test).configure {
+    usertests
+    colortests
+}
