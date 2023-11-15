@@ -1,7 +1,7 @@
 task_branch = "${TEST_BRANCH_NAME}"
 def branch_cutted = task_branch.contains("origin") ? task_branch.split('/')[1] : task_branch.trim()
 currentBuild.displayName = "$branch_cutted"
-base_git_url = "https://github.com/RamKotto/ApiTests.git"
+base_git_url = "https://gitlab.com/epickonfetka/cicd-threadqa.git"
 
 
 node {
@@ -19,27 +19,44 @@ node {
             }
         }
 
-        parallel getTestStages(["colortests", "usertests"])
-
-    }
-
-    try {
-        stage("Run tests") {
-            parallel(
-                    'Users': {
-                        runTestWithTag("colortests")
-                    },
-                    'Colors': {
-                        runTestWithTag("usertests")
-                    }
-            )
+        try {
+            parallel getTestStages(["colortests", "usertests"])
+        } finally {
+            stage ("Allure") {
+                generateAllure()
+            }
         }
-    } finally {
-        stage("Allure") {
-            generateAllure()
-        }
+
+//        try {
+//            stage("Run tests") {
+//                parallel(
+//                        'Api Tests': {
+//                            runTestWithTag("colortests")
+//                        },
+//                        'Ui Tests': {
+//                            runTestWithTag("usertests")
+//                        }
+//                )
+//            }
+//        } finally {
+//            stage("Allure") {
+//                generateAllure()
+//            }
+//        }
     }
 }
+
+
+def getTestStages(testTags) {
+    def stages = [:]
+    testTags.each { tag ->
+        stages["${tag}"] = {
+            runTestWithTag(tag)
+        }
+    }
+    return stages
+}
+
 
 def runTestWithTag(String tag) {
     try {
