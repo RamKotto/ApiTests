@@ -34,7 +34,7 @@ def getTestStages(testTasks) {
     def stages = [:]
     testTasks.each { task ->
         stages["${task}"] = {
-            testTasks
+            runTestTask(task)
         }
     }
     return stages
