@@ -28,7 +28,7 @@ pipeline {
 
         stage('Tests') {
             steps {
-                sh "export PATH=$PATH:/opt/gradle/gradle-8.4"
+                sh "export PATH=$PATH:/opt/gradle/gradle-8.4/bin\n"
                 sh "gradle cleanTest regresstests"
             }
         }
