@@ -18,26 +18,8 @@ node {
                 echo "Current branch is develop"
             }
         }
-
-//        try {
-//            parallel getTestStages(["colortests", "usertests"])
-//        } finally {
-//            stage ("Allure") {
-//                generateAllure()
-//            }
-//        }
-
         try {
-            stage("Run tests") {
-                parallel(
-                        'colortests': {
-                            runTestWithTag("colortests")
-                        },
-                        'usertests': {
-                            runTestWithTag("usertests")
-                        }
-                )
-            }
+            parallel getTestStages(["colortests", "usertests"])
         } finally {
             stage("Allure") {
                 generateAllure()
