@@ -19,31 +19,31 @@ node {
             }
         }
 
-        try {
-            parallel getTestStages(["colortests", "usertests"])
-        } finally {
-            stage ("Allure") {
-                generateAllure()
-            }
-        }
+        parallel getTestStages(["colortests", "usertests"])
+
     }
-}
 
-
-def getTestStages(testTasks) {
-    def stages = [:]
-    testTasks.each { task ->
-        stages["${task}"] = {
-            runTestTask(task)
-        }
-    }
-    return stages
-}
-
-
-def runTestTask(String task) {
     try {
-        labelledShell(label: "Run ${task}", script: "grep 'ApiTests'")
+        stage("Run tests") {
+            parallel(
+                    'Users': {
+                        runTestWithTag("colortests")
+                    },
+                    'Colors': {
+                        runTestWithTag("usertests")
+                    }
+            )
+        }
+    } finally {
+        stage("Allure") {
+            generateAllure()
+        }
+    }
+}
+
+def runTestWithTag(String tag) {
+    try {
+        labelledShell(label: "Run ${tag}", script: "chmod +x gradlew \n./gradlew -x test ${tag}")
     } finally {
         echo "some failed tests"
     }
