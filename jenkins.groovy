@@ -43,7 +43,7 @@ def getTestStages(testTasks) {
 
 def runTestTask(String task) {
     try {
-        labelledShell(label: "Run ${task}", script: "gradle ${task}")
+        labelledShell(label: "Run ${task}", script: "sh './gradlew clean ${task}'")
     } finally {
         echo "some failed tests"
     }
