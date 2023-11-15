@@ -14,11 +14,23 @@ def generateAllure() {
 pipeline {
     agent any
 
+    environment {
+        VERSION = "1.2.3-SNAPSHOT"
+    }
+
     tools {
         gradle '8.4'
     }
 
     stages {
+        stage("Build") {
+            steps {
+                script {
+                    currentBuild.displayName = "v${env.VERSION}"
+                    currentBuild.description = "#${BUILD_NUMBER} (v${env.VERSION})"
+                }
+            }
+        }
         stage('Git') {
             steps {
                 git url: 'https://github.com/RamKotto/ApiTests.git',
