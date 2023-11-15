@@ -30,20 +30,20 @@ node {
 }
 
 
-def getTestStages(testTags) {
+def getTestStages(testTasks) {
     def stages = [:]
-    testTags.each { tag ->
-        stages["${tag}"] = {
-            runTestWithTag(tag)
+    testTasks.each { task ->
+        stages["${task}"] = {
+            testTasks
         }
     }
     return stages
 }
 
 
-def runTestWithTag(String tag) {
+def runTestTask(String task) {
     try {
-        labelledShell(label: "Run ${tag}", script: "chmod +x gradlew \n./gradlew -x test ${tag}")
+        labelledShell(label: "Run ${task}", script: "gradle ${task}")
     } finally {
         echo "some failed tests"
     }
