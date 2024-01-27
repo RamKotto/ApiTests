@@ -40,7 +40,7 @@ pipeline {
 
         stage('Tests') {
             steps {
-                sh "/opt/gradle/gradle-8.4/bin/gradle cleanTest ${TASK}"
+                sh "/opt/gradle/gradle-8.5/bin/gradle cleanTest ${TASK}"
             }
         }
 
